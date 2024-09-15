@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import { env } from './utils/env.js';
-import contactsRouter from './routers/contactsRouter.js';
+import contactsRouter from './routers/contactRouter.js';
 import {
   notFoundMiddleware,
   errorHandlerMiddleware,
