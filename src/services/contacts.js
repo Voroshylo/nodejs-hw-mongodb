@@ -1,22 +1,30 @@
-import { contactsCollection } from '../db/initMongoConnection.js';
+import { ContactsCollection } from '../db/contacts.js';
 
 export const getAllContacts = async () => {
-  const contacts = await contactsCollection.find();
+  const contacts = await ContactsCollection.find();
   return contacts;
 };
 
-export const getAllContactsById = async (contactId) => {
-  const contact = await contactsCollection.findById(contactId);
+export const getContactById = async (contactId) => {
+  const contact = await ContactsCollection.findById(contactId);
   return contact;
 };
 
 export const createContact = async (payload) => {
-  const contact = await contactsCollection.create(payload);
+  const contact = await ContactsCollection.create(payload);
+  return contact;
+};
+
+export const deleteContact = async (contactId) => {
+  const contact = await ContactsCollection.findOneAndDelete({
+    _id: contactId,
+  });
+
   return contact;
 };
 
 export const updateContact = async (contactId, payload, options = {}) => {
-  const rawResult = await contactsCollection.findOneAndUpdate(
+  const rawResult = await ContactsCollection.findOneAndUpdate(
     { _id: contactId },
     payload,
     {
