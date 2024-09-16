@@ -20,7 +20,7 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Please enter /contacts for url!',
+      message: 'Please enter /contacts in url!',
     });
   });
   app.get('/contacts', async (req, res) => {
