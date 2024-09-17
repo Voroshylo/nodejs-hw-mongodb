@@ -1,5 +1,6 @@
 import express from 'express';
 import pino from 'pino-http';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import { env } from './utils/env.js';
 import { getAllContacts, getContactById } from './services/contacts.js';
@@ -25,36 +26,35 @@ export const setupServer = () => {
   });
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
-    console.log(contacts);
-
     res.status(200).json({
       message: 'Successfully found contacts!',
       data: contacts,
     });
   });
 
-  app.get('/contacts/:contactId', async (req, res, next) => {
+  app.get('/contact/:contactId', async (req, res, next) => {
     const { contactId } = req.params;
-    const contact = await getContactById(contactId);
 
-    // Відповідь, якщо контакт не знайдено
-    if (!contact) {
-      res.status(404).json({
-        message: 'Contact not found',
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      return res.status(400).json({
+        message: 'Invalid contact ID format',
       });
-      return;
     }
 
-    // Відповідь, якщо контакт знайдено
-    res.status(200).json({
-      data: contact,
-    });
-  });
+    try {
+      const contact = await getContactById(contactId);
+      if (!contact) {
+        return res.status(404).json({
+          message: 'Student not found',
+        });
+      }
 
-  app.use('*', (req, res, next) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
+      res.status(200).json({
+        data: contact,
+      });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.use((err, req, res, next) => {
