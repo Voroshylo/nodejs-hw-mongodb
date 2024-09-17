@@ -3,8 +3,10 @@ import pino from 'pino-http';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { env } from './utils/env.js';
-import { getAllContacts, getContactById } from './services/contacts.js';
+import { getAllContacts, getContactsById } from './services/contacts.js';
+
 const PORT = Number(env('PORT', '3001'));
+
 export const setupServer = () => {
   const app = express();
 
@@ -32,7 +34,7 @@ export const setupServer = () => {
     });
   });
 
-  app.get('/contact/:contactId', async (req, res, next) => {
+  app.get('/contacts/:contactId', async (req, res, next) => {
     const { contactId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
@@ -42,10 +44,10 @@ export const setupServer = () => {
     }
 
     try {
-      const contact = await getContactById(contactId);
+      const contact = await getContactsById(contactId);
       if (!contact) {
         return res.status(404).json({
-          message: 'Student not found',
+          message: 'Contact not found',
         });
       }
 
@@ -58,9 +60,9 @@ export const setupServer = () => {
   });
 
   app.use((err, req, res, next) => {
+    console.error(err.stack);
     res.status(500).json({
       message: 'Something went wrong',
-      error: err.message,
     });
   });
 
