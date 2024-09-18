@@ -28,7 +28,8 @@ export const setupServer = () => {
   });
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
-    res.status(200).json({
+    res.json({
+      status: 200,
       message: 'Successfully found contacts!',
       data: contacts,
     });
@@ -38,7 +39,8 @@ export const setupServer = () => {
     const { contactId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      return res.status(400).json({
+      return res.json({
+        status: 404,
         message: 'Invalid contact ID format',
       });
     }
@@ -46,12 +48,14 @@ export const setupServer = () => {
     try {
       const contact = await getContactsById(contactId);
       if (!contact) {
-        return res.status(404).json({
+        return res.json({
+          status: 404,
           message: 'Contact not found',
         });
       }
 
-      res.status(200).json({
+      res.json({
+        status: 200,
         data: contact,
       });
     } catch (error) {
@@ -61,7 +65,8 @@ export const setupServer = () => {
 
   app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({
+    res.json({
+      status: 500,
       message: 'Something went wrong',
     });
   });
