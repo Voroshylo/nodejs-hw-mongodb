@@ -1,9 +1,10 @@
 import express from 'express';
 import pino from 'pino-http';
-import mongoose from 'mongoose';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import contactsRouter from './routers/contacts.js';
 import cors from 'cors';
 import { env } from './utils/env.js';
-import { getAllContacts, getContactsById } from './services/contacts.js';
 
 const PORT = Number(env('PORT', '3001'));
 
@@ -13,6 +14,12 @@ export const setupServer = () => {
   app.use(express.json());
   app.use(cors());
 
+  app.use('/contacts', contactsRouter);
+
+  app.use('*', notFoundHandler);
+
+  app.use(errorHandler);
+
   app.use(
     pino({
       transport: {
@@ -20,48 +27,6 @@ export const setupServer = () => {
       },
     }),
   );
-
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Please enter /contacts in url!',
-    });
-  });
-  app.get('/contacts', async (req, res) => {
-    const contacts = await getAllContacts();
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
-
-  app.get('/contacts/:contactId', async (req, res, next) => {
-    const { contactId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      return res.json({
-        status: 404,
-        message: 'Invalid contact ID format',
-      });
-    }
-
-    try {
-      const contact = await getContactsById(contactId);
-      if (!contact) {
-        return res.json({
-          status: 404,
-          message: 'Contact not found',
-        });
-      }
-
-      res.json({
-        status: 200,
-        data: contact,
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
 
   app.use((err, req, res, next) => {
     console.error(err.stack);
