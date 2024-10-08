@@ -12,7 +12,7 @@ import { isValidId } from '../middlewares/isValidId.js';
 import {
   createContactSchema,
   updateContactSchema,
-} from '../validation/contacts.js';
+} from '../validation/auth.js';
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.get('/', ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
 router.post(
-  '/',
+  '/register',
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
