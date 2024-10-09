@@ -1,4 +1,5 @@
 import {
+  getAllContacts,
   getContactById,
   createContact,
   patchContact,
@@ -14,7 +15,7 @@ export const getContactsController = async (req, res, next) => {
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const { _id: userId } = req.user;
   const filter = parseFilterParams(req.query);
-  const contacts = await getContactById({
+  const contacts = await getAllContacts({
     page,
     perPage,
     sortBy,
