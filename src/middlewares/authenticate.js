@@ -17,6 +17,7 @@ export const authenticate = async (req, res, next) => {
   }
   console.log('Token:', token);
 
+  // Шукаємо сесію за accessToken
   const session = await SessionsCollection.findOne({ accessToken: token });
   console.log('Session:', session);
 
