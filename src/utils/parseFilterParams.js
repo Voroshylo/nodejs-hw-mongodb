@@ -1,31 +1,27 @@
-// '_id',
-// 'name',
-// 'phoneNumber',
-// 'email',
-// 'createdAt',
-// 'updateAt',
 const parseContactType = (type) => {
   const isString = typeof type === 'string';
   if (!isString) return;
-  const isContactType = (type) => ['home', 'personal', 'other'].includes(type);
-  if (isContactType(type)) return type;
+  const isType = (type) => ['work', 'home', 'personal'].includes(type);
+
+  if (isType(type)) return type;
 };
 
-const parseIsFavourite = (isFavourite) => {
-  if (typeof isFavourite === 'boolean') {
-    return isFavourite;
+const parseFavorite = (favorite) => {
+  if (typeof favorite === 'boolean') {
+    return favorite;
   }
-  return isFavourite;
+
+  return favorite;
 };
 
 export const parseFilterParams = (query) => {
-  const { type, isFavourite } = query;
+  const { contactType, isFavourite } = query;
 
-  const parsedContactType = parseContactType(type);
-  const parsedIsFavourite = parseIsFavourite(isFavourite);
+  const parsedType = parseContactType(contactType);
+  const parsedIsFavorite = parseFavorite(isFavourite);
 
   return {
-    type: parsedContactType,
-    isFavourite: parsedIsFavourite,
+    contactType: parsedType,
+    isFavourite: parsedIsFavorite,
   };
 };

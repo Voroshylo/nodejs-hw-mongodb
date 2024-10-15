@@ -1,40 +1,37 @@
+// src/db/models/student.js
+
 import { model, Schema } from 'mongoose';
 
-const contactSchema = new Schema(
+const contactsSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
     },
-
     phoneNumber: {
       type: String,
       required: true,
     },
-
     email: {
       type: String,
     },
-
     isFavourite: {
       type: Boolean,
+      required: true,
       default: false,
     },
-
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
       required: true,
+      enum: ['work', 'home', 'personal'],
       default: 'personal',
     },
-
-    userId: { type: Schema.Types.ObjectId, ref: 'users' },
+    // userId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   },
-
   {
     timestamps: true,
     versionKey: false,
   },
 );
-
-export const ContactsCollection = model('contacts', contactSchema);
+export const ContactsCollection = model('contacts', contactsSchema);
