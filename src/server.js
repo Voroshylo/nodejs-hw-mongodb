@@ -8,7 +8,8 @@ import cookieParser from 'cookie-parser';
 import routers from './routers/index.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.js';
-const PORT = Number(env('PORT', '3000'));
+import { UPLOAD_DIR } from './constants/index.js';
+const PORT = Number(env('PORT', '3005'));
 export const setupServer = () => {
   const app = express();
 
@@ -29,6 +30,7 @@ export const setupServer = () => {
       message: 'Please enter /contacts for url!',
     });
   });
+  app.use('/uploads', express.static(UPLOAD_DIR));
   app.use(routers);
   app.use('*', notFoundHandler);
   app.use(errorHandlerMiddleware);

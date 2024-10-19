@@ -28,6 +28,7 @@ const contactsSchema = new Schema(
     },
     // userId: { type: String, required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
+    photo: { type: String },
   },
   {
     timestamps: true,
