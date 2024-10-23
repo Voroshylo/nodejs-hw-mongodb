@@ -18,7 +18,9 @@ import { checkUserId } from '../services/checkUserId.js';
 import { upload } from '../middlewares/multer.js';
 
 const router = Router();
+
 router.use(authenticate);
+
 router.get('/', checkUserId, ctrlWrapper(getAllContactsController));
 
 router.get(
@@ -35,6 +37,7 @@ router.post(
   validateBody(crateContactSchema),
   ctrlWrapper(createContactController),
 );
+
 router.patch(
   '/:contactId',
   checkUserId,
@@ -43,5 +46,7 @@ router.patch(
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
+
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
+
 export default router;

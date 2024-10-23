@@ -7,7 +7,7 @@ import {
   FIFTEEN_MINUTES,
   SMTP,
   TEMPLATES_DIR,
-  THIHTY_DAY,
+  THIRTY_DAY,
 } from '../constants/index.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../utils/env.js';
@@ -15,6 +15,7 @@ import { sendEmail } from '../utils/sendMail.js';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
   if (user) {
@@ -46,7 +47,7 @@ export const loginUser = async (payload) => {
     accessToken,
     refreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + THIHTY_DAY),
+    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
 };
 export const logoutUser = async (sessionId) => {
@@ -60,7 +61,7 @@ const createSession = () => {
     accessToken,
     refreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + THIHTY_DAY),
+    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   };
 };
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
