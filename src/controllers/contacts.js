@@ -37,32 +37,31 @@ export const getAllContactsController = async (req, res) => {
 };
 export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
-
-  const contact = await getContactById(contactId);
-
-  if (contact.userId.toString() !== req.user._id.toString()) {
-    res.status(401).json({
-      status: 401,
-      message: 'You do not have access rights to this contact',
-    });
-    return;
-  }
+  const { _id: userId } = req.user;
+  const contact = await getContactById(contactId, userId);
+  console.log(contact);
   if (!contact) {
-    res.status(404).json({
-      message: 'Contact not found',
-    });
-    return;
+    throw createHttpError(404, `Contact with id ${contactId} not found`);
   }
 
-  // Відповідь, якщо контакт знайдено
-  res.status(200).json({
+  res.json({
     status: 200,
-    message: `Contact with ID: ${contactId} found`,
+    message: `Successfully found contact with id ${contactId}!`,
     data: contact,
   });
 };
-export const createContactController = async (req, res, next) => {
-  const reqData = { ...req.body, userId: req.user._id };
+export const createContactController = async (req, res) => {
+  const { _id: userId } = req.user;
+  if (!userId) {
+    throw createHttpError(401, 'User is not authenticated');
+  }
+  if (!req.body.name || !req.body.phoneNumber || !req.body.contactType) {
+    throw createHttpError(
+      400,
+      'Name, phoneNumber, and contactType are required fields!',
+    );
+  }
+
   const photo = req.file;
   let photoUrl;
 
@@ -74,48 +73,49 @@ export const createContactController = async (req, res, next) => {
     }
   }
 
-  const contact = await createContact({ ...reqData, photo: photoUrl });
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: contact,
-  });
-};
-export const patchContactController = async (req, res, next) => {
-  const { contactId } = req.params;
-  // console.log(req.params);
-  const { body } = req;
-  const contactCheck = await getContactById(contactId);
-
-  if (contactCheck.userId.toString() !== req.user._id.toString()) {
-    res.status(401).json({
-      status: 401,
-      message: 'You do not have access rights to this contact',
-    });
-    return;
-  }
-  const photo = req.file;
-  let photoUrl;
-
-  if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
-      photoUrl = await saveFileToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
-    }
-  }
-  const { contact } = await updateContact(contactId, {
-    ...body,
+  const contact = await createContact({
+    userId,
+    ...req.body,
     photo: photoUrl,
   });
-  console.log(contact);
 
-  res.send({
-    status: 200,
-    message: 'Successfully patched a contact!',
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
     data: contact,
   });
 };
+
+export const patchContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const { _id: userId } = req.user;
+  const photo = req.file;
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await updateContact(contactId, userId, {
+    ...req.body,
+    photo: photoUrl,
+  });
+
+  if (!result) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result.contact,
+  });
+};
+
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
   const contactCheck = await getContactById(contactId);
