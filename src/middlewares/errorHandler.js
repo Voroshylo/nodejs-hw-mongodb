@@ -1,4 +1,5 @@
 import { isHttpError } from 'http-errors';
+
 export const errorHandlerMiddleware = (err, req, res, next) => {
   if (isHttpError(err)) {
     return res.status(err.status).json({
