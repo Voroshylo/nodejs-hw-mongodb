@@ -1,0 +1,52 @@
+tags:
+  - Auth
+summary: User login
+operationId: loginUser
+description: Authenticate a user and return a JWT token
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: verezhak@gmail.com
+          password:
+            type: string
+            example: your_password
+responses:
+  '200':
+    description: Successfully logged in
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully logged in!
+            data:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: V2rYVl6VT+x3v84txE/f25d7gr4v5k1Ro7tSOMk0
+  '401':
+    description: Email not found or unauthorized.
+  '500':
+    description: Server error.
