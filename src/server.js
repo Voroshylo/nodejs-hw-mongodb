@@ -11,7 +11,7 @@ import { errorHandlerMiddleware } from './middlewares/errorHandler.js';
 import { UPLOAD_DIR } from './constants/index.js';
 import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
-const PORT = Number(env('PORT', '3001'));
+const PORT = Number(env('PORT', '3000'));
 export const setupServer = () => {
   const app = express();
 
