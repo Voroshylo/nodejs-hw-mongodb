@@ -22,7 +22,7 @@ requestBody:
           phoneNumber:
             description: Contact's phone number
             type: string
-            example: '+380986268780'
+            example: '+380966281663'
           contactType:
             description: Contact's type
             type: string
@@ -30,7 +30,7 @@ requestBody:
           email:
             description: Contact's email
             type: string
-            example: verezhak@mail.com
+            example: sergeyvoroshilo@gmail.com
           isFavorite:
             description: Contact's favorite status
             type: boolean
