@@ -1,0 +1,14 @@
+tags:
+  - Auth
+summary: User logout
+operationId: logoutContact
+description: Invalidate the user JWT token
+security:
+  - bearerAuth: []
+responses:
+  '204':
+    description: Successfully logged out.
+  '401':
+    description: No active session
+  '500':
+    description: Server error.
